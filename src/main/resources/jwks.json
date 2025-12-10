@@ -1,0 +1,12 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "n": "l45_TYk81ZxyQ0gJUP5rmS8Fr2BPbk2gtTx7rxEFyUbt8sDnGI84CuqWUbeRWBGQSwvaCEoBUNnRTreaYQn48GUAEqarLtLDlnrYdOKXfxjg4a04NLdJBJoKp4OdaTlKbqv18w6-mG7jONcQBJiHte5yuXabG_bgonlXJXeYC0b6_Y3QTo7Sx2hCxLQgo77P2tWM8wj95qWOIxPhOUvrac8MCbarOBE6yFh4_cUsEwh8eOlJBdX3h_JGl2mmAd08cZQepYMsJ2LRyDwsACzWvDsA77-ofJbMHA3voBbcq-dUqXsZZZUzpi3Xf1wUlmF2XWkdlXtzfowoD3pifH7iDQ",
+      "e": "AQAB",
+      "kid": "ariza-key-1",
+      "use": "sig",
+      "alg": "RS256"
+    }
+  ]
+}
