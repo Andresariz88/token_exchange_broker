@@ -29,7 +29,7 @@ public class JwtGenerator {
         JWSSigner signer = new RSASSASigner(privateKey);
 
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                .subject("user123")
+                .subject("andres.ariza-p")
                 .claim("roles", "Finance.Admin")
                 .claim("oid", "00-ab-12345")
                 .expirationTime(new Date(new Date().getTime() + 5 * 60 * 1000))
