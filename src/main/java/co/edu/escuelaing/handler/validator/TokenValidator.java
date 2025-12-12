@@ -4,11 +4,9 @@ import com.nimbusds.jwt.SignedJWT;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -100,7 +98,7 @@ public class TokenValidator {
         }
     }
 
-    private void validateStandardClaims(JWTClaimsSet claims) throws ParseException {
+    private void validateStandardClaims(JWTClaimsSet claims) {
 
         // Expiration (exp)
         if (claims.getExpirationTime() == null ||

@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class RoleMappingService {
     private final DynamoDbClient dynamoDbClient;
-    private final String tableName = "RoleMappings";
+    private static final String tableName = "RoleMappings";
 
     public RoleMappingService(DynamoDbClient dynamoDbClient) {
         this.dynamoDbClient = dynamoDbClient;
@@ -49,7 +49,7 @@ public class RoleMappingService {
                 }
 
             } catch (Exception e) {
-                System.out.println("Error loading mapping for role: " + corpRole);
+                throw new RuntimeException("Error loading mapping for role: " + corpRole);
             }
         }
 

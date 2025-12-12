@@ -4,27 +4,26 @@ import co.edu.escuelaing.handler.model.AppNormalizedClaims;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.kms.model.SignRequest;
 import software.amazon.awssdk.services.kms.KmsClient;
-import software.amazon.awssdk.services.kms.model.SignResponse;
+import software.amazon.awssdk.services.kms.model.SigningAlgorithmSpec;
 
-import java.security.interfaces.RSAPrivateKey;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
 public class TokenGenerator {
 
-//    private final KmsClient kmsClient = KmsClient.create();
+    private final KmsClient kmsClient = KmsClient.create();
+    private final String kmsKeyId = "arn:aws:kms:us-east-1:787156774370:key/e3e77703-fa95-4dd9-a55b-4f2a1c258372";
 
-    private final RSAPrivateKey privateKey;
 
-    public TokenGenerator(RSAPrivateKey privateKey) {
-        this.privateKey = privateKey;
+    public TokenGenerator() {
     }
 
     public String generateToken(
@@ -65,22 +64,23 @@ public class TokenGenerator {
             // ---------- FIRMA ----------
             SignedJWT signedJWT = new SignedJWT(header, claims);
 
-//            byte[] signingInput = signedJWT.getSigningInput();
+            // Construir el signing input
+            byte[] signingInput = signedJWT.getSigningInput();  // header.payload en Base64URL
 
-//            String kmsKeyId = "arn:aws:kms:us-east-1:787156774370:key/e3e77703-fa95-4dd9-a55b-4f2a1c258372";
+            // Firmar con AWS KMS
+            var signResponse = kmsClient.sign(SignRequest.builder()
+                    .keyId(kmsKeyId)
+                    .message(SdkBytes.fromByteArray(signingInput))
+                    .signingAlgorithm(SigningAlgorithmSpec.RSASSA_PKCS1_V1_5_SHA_256)
+                    .build());
 
-//            SignResponse resp = kmsClient.sign(SignRequest.builder()
-//                    .keyId(kmsKeyId)
-//                    .message(SdkBytes.fromByteArray(signingInput))
-//                    .signingAlgorithm("RSASSA_PKCS1_V1_5_SHA_256")
-//                    .build());
+            byte[] signatureBytes = signResponse.signature().asByteArray();
 
-//            byte[] signatureBytes = resp.signature().asByteArray();
+            // Construir la representación final del JWT
+            String headerAndPayload = new String(signingInput, StandardCharsets.US_ASCII);
+            String signatureB64Url = Base64URL.encode(signatureBytes).toString();
 
-
-            signedJWT.sign(new RSASSASigner(privateKey));
-
-            return signedJWT.serialize();
+            return headerAndPayload + "." + signatureB64Url;
 
         } catch (Exception ex) {
             throw new RuntimeException("Error generating JWT", ex);
